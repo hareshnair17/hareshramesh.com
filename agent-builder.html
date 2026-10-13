@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="How Agent Builder took AI adoption at Sense HQ from 38% to 66%: recruiters describe the outcome, the agent builds the automation.">
+<link rel="canonical" href="https://hareshramesh.com/agent-builder.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#FBFAF8">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Haresh Ramesh">
+<meta property="og:title" content="Agent Builder · Haresh Ramesh">
+<meta property="og:description" content="How Agent Builder took AI adoption at Sense HQ from 38% to 66%: recruiters describe the outcome, the agent builds the automation.">
+<meta property="og:url" content="https://hareshramesh.com/agent-builder.html">
+<meta property="og:image" content="https://hareshramesh.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agent Builder · Haresh Ramesh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Geist:wght@400;500&display=swap">
+<style>
+/* Layout: the Figma deck, rebuilt as web slides. White, black, navy and cream slides; Manrope with Space Mono labels; coral for problems, purple for highlights, lime for prototypes and wins. Top bar and arrow controls stay as on the site. */
+:root{
+  --ink:#0F0F10; --body:#2B2B2E; --muted:#8A8A8E; --rule:#D4D4D6;
+  --purple:#6B4EF0; --lav:#B4A6FF; --coral:#EE5D50; --coral2:#F3907F; --red:#F0483E;
+  --lime:#CDE53F; --lime2:#AFC827; --cream:#F2EEE4; --navy:#14162B;
+  --site-bg:#FBFAF8; --site-line:#E2E0DA; --site-muted:#6A6964; --site-accent:#E5631C;
+  --sans:"Manrope","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --mono:"Space Mono",ui-monospace,Menlo,monospace;
+  --ui:"Geist","Helvetica Neue","Segoe UI",system-ui,sans-serif;
+  --gutter:clamp(16px,4.6vw,88px); --bar:58px;
+  --t-label:clamp(.9rem,1.35vw,1.35rem);
+  --t-h:clamp(1.6rem,3.05vw,3rem);
+  --t-h-sm:clamp(1.35rem,2.3vw,2.25rem);
+  --t-body:clamp(1rem,1.3vw,1.28rem);
+  --t-small:clamp(.88rem,1vw,1rem);
+  --t-num:clamp(2.4rem,4vw,4rem);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;background:#fff;color:var(--ink);font-family:var(--sans);font-size:var(--t-body);line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden}
+img,video{max-width:100%;display:block}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--site-accent);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-weight:600;letter-spacing:-.02em;line-height:1.15;margin:0;text-wrap:balance}
+p{margin:0}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- Site chrome (unchanged) ---------- */
+.bar{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);z-index:30;height:var(--bar);background:var(--site-bg);border-bottom:1px solid var(--site-line);font-family:var(--ui)}
+.bar .in{height:100%;padding-inline:var(--gutter);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.bar a{text-decoration:none;font-size:.92rem;color:var(--site-muted)}
+.bar a:hover{color:var(--ink)}
+.bar .mark{font-family:"Manrope",sans-serif;font-weight:700;color:var(--ink);font-size:1.05rem}
+.bar .mark span{color:var(--site-accent)}
+.bar .title{font-size:.88rem;color:var(--site-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;width:100%;transform-origin:0 50%;transform:scaleX(0);transition:transform .45s cubic-bezier(.2,.8,.2,1);background:linear-gradient(90deg,#4F78E2,#B484E4,#E95598,#EA6A3E)}
+.ctrl{position:fixed;z-index:40;bottom:calc(20px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;font-family:var(--ui)}
+.ctrl.right{right:var(--gutter)}
+.ctrl.left{left:var(--gutter)}
+.count{font-family:"Geist Mono",ui-monospace,monospace;font-size:.82rem;color:var(--site-muted);font-variant-numeric:tabular-nums;padding:6px 10px;border-radius:999px;background:rgb(255 255 255 / .85)}
+.count b{color:var(--ink);font-weight:500}
+.nav{all:unset;cursor:pointer;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:#fff;box-shadow:0 8px 24px rgb(20 20 20 / .16),0 0 0 1px rgb(255 255 255 / .18);transition:background .2s,opacity .2s,transform .2s}
+.nav:hover{background:var(--site-accent)}
+.nav:active{transform:scale(.96)}
+.nav.prev{background:#fff;color:var(--ink);border:1px solid var(--site-line);box-shadow:none;width:50px;height:50px}
+.nav.prev:hover{background:#F3F2EF}
+body.on-dark .nav:not(.prev){background:#fff;color:#111}
+body.on-dark .nav:not(.prev):hover{background:var(--lime);color:#111}
+.nav[disabled]{opacity:.35;cursor:default;pointer-events:none}
+.chap{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:10px;height:50px;padding:0 18px;border-radius:999px;background:#fff;border:1px solid var(--site-line);font-size:.92rem;max-width:min(60vw,22rem);color:var(--ink)}
+.chap span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chap:hover{background:#F3F2EF}
+.menu{position:fixed;z-index:41;left:var(--gutter);bottom:calc(82px + env(safe-area-inset-bottom,0px));background:#fff;border:1px solid var(--site-line);border-radius:16px;box-shadow:0 18px 48px rgb(20 20 20 / .14);padding:8px;display:grid;min-width:16rem;font-family:var(--ui)}
+.menu button{all:unset;cursor:pointer;display:flex;justify-content:space-between;gap:20px;padding:10px 12px;border-radius:10px;font-size:.92rem;color:var(--ink)}
+.menu button span{font-family:"Geist Mono",ui-monospace,monospace;font-size:.78rem;color:var(--site-muted)}
+.menu button:hover,.menu button:focus-visible{background:#F3F2EF}
+.menu button[aria-current="true"]{color:#B24A0E}
+.hint{position:fixed;z-index:39;left:50%;bottom:calc(34px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);font-family:var(--ui);font-size:.8rem;color:var(--site-muted);transition:opacity .4s;background:rgb(255 255 255 / .85);padding:4px 10px;border-radius:999px}
+.hint kbd{font-family:"Geist Mono",monospace;font-size:.74rem;border:1px solid var(--site-line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:#fff}
+
+/* ---------- Deck ---------- */
+.deck{position:fixed;left:0;right:0;top:calc(var(--bar) + env(safe-area-inset-top,0px));bottom:env(safe-area-inset-bottom,0px);overflow:hidden;touch-action:pan-y}
+.slide{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;padding:clamp(28px,6.5vh,84px) var(--gutter) 84px;background:#fff;color:var(--ink);
+  opacity:0;visibility:hidden;transform:translateX(48px);transition:opacity .45s ease,transform .55s cubic-bezier(.2,.8,.2,1),visibility 0s linear .55s}
+.slide.on{opacity:1;visibility:visible;transform:none;transition:opacity .45s ease,transform .55s cubic-bezier(.2,.8,.2,1),visibility 0s}
+.slide.past{transform:translateX(-48px)}
+.slide.dark{background:#000;color:#fff}
+.slide.cream{background:var(--cream)}
+.slide.soft{background:#F6F5FB}
+.slide.navy{background:radial-gradient(ellipse 80% 70% at 30% 30%,#1C1D35,var(--navy) 70%);color:#fff}
+.in-slide{width:100%;max-width:84rem;display:grid;gap:clamp(18px,3.4vh,40px);align-content:start}
+.center{text-align:center;justify-items:center;margin-inline:auto}
+
+/* type */
+.label{font-family:var(--mono);font-weight:700;font-size:var(--t-label);letter-spacing:.09em;display:inline-flex;align-items:center;gap:10px}
+.label .of{color:#9A9A9E}
+.label .hot{color:var(--red)}
+.h{font-size:var(--t-h);max-width:20ch}
+.h.wide{max-width:30ch}
+.h-sm{font-size:var(--t-h-sm);font-weight:600;max-width:30ch}
+.b{font-size:var(--t-body);color:var(--body);max-width:36rem;line-height:1.6}
+.dark .b,.navy .b{color:#D7D7DB}
+.s{font-size:var(--t-small);color:var(--muted);line-height:1.6}
+.dark .s{color:#9E9EA3}
+.pu{color:var(--purple)}
+.rd{color:var(--red)}
+.lm{color:var(--lime)}
+.lv{color:var(--lav)}
+.stack{display:grid;gap:14px;align-content:start;min-width:0}
+
+/* rule list (questions) */
+.rl{list-style:none;margin:0;padding:0;display:grid;gap:clamp(12px,2.2vh,22px)}
+.rl li{border-left:1.5px solid #B0716B;padding-left:14px;font-size:clamp(1.05rem,1.45vw,1.45rem);font-weight:500;color:#2A2A33;line-height:1.35}
+.dark .rl li{color:#EDEDF0}
+
+/* quote */
+.qt{border-left:2px solid var(--purple);padding-left:18px;display:grid;gap:6px}
+.qt p{font-size:clamp(1.1rem,1.7vw,1.7rem);font-weight:600;color:var(--purple);line-height:1.3;letter-spacing:-.01em}
+.qt cite{font-style:normal;font-size:var(--t-small);color:var(--muted)}
+.qt cite.m{font-family:var(--mono);font-size:.82rem;letter-spacing:.02em}
+.dark .qt{border-color:var(--lav)} .dark .qt p{color:var(--lav)}
+.qt.red{border-color:#C9534B} .qt.red p{color:var(--red)}
+.qt.big p{font-size:clamp(1.3rem,2.3vw,2.3rem);line-height:1.25}
+
+/* media */
+.shot{border-radius:6px;overflow:hidden;box-shadow:0 0 0 1px rgb(0 0 0 / .08),0 18px 40px -24px rgb(0 0 0 / .35);background:#fff}
+.dark .shot{box-shadow:0 0 0 1px rgb(255 255 255 / .12)}
+.shot img,.shot video{width:100%;height:auto}
+.device{border-radius:22px;border:10px solid #2A2A2E;overflow:hidden;background:#2A2A2E}
+.device.light{border-color:#D6D6D8;background:#D6D6D8}
+.device img{border-radius:12px}
+figcaption{font-size:var(--t-small);color:var(--muted);margin-top:12px;text-align:center}
+figure{margin:0;min-width:0}
+
+/* two-column slide */
+.cols{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.35fr);gap:clamp(28px,4.4vw,72px);align-items:start}
+.cols.mid{align-items:center}
+/* heading lives in the text column so its cap line meets the top of the media */
+.cols.top-al{align-items:start;margin-top:clamp(0px,1vh,12px)}
+.cols.top-al .h{line-height:1.02;margin-top:-.12em}
+.cols.half{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+/* cover */
+.cover{position:relative;min-height:100%;display:grid;align-content:start;justify-items:center;gap:clamp(18px,3vh,30px);padding-top:clamp(8px,3vh,32px)}
+.cover .bg{position:absolute;right:calc(var(--gutter) * -1);top:clamp(-84px,-6.5vh,-28px);height:calc(100% + 110px);width:auto;max-width:none;opacity:.95;pointer-events:none;mask-image:linear-gradient(90deg,transparent 0,#000 35%)}
+.pill{font-family:var(--sans);font-weight:700;font-size:clamp(.72rem,.95vw,.9rem);letter-spacing:.04em;text-transform:uppercase;padding:7px 16px;border-radius:999px;background:#5B3FD6;color:#fff;position:relative}
+.cover h1{font-size:clamp(1.6rem,2.6vw,2.6rem);font-weight:500;color:#fff;position:relative;text-align:center}
+.cover .shot{position:relative;width:min(100%,62rem);border-radius:4px}
+
+/* context table */
+.tbl{margin:0;border-top:1px solid #E1E1E3}
+.tbl>div{display:grid;grid-template-columns:minmax(7rem,.32fr) minmax(0,1fr);gap:20px;padding-block:clamp(12px,2vh,20px);border-bottom:1px solid #E1E1E3}
+.tbl dt{color:var(--muted);font-size:var(--t-small)}
+.tbl dd{margin:0;font-size:var(--t-small);color:var(--ink);line-height:1.7}
+.ctx p{font-size:clamp(1.05rem,1.45vw,1.4rem);line-height:1.5;color:var(--ink);max-width:24em}
+.ctx p+p{margin-top:1.1em}
+
+/* red pill label */
+.redpill{font-family:var(--mono);font-weight:700;font-size:var(--t-label);letter-spacing:.09em;color:#fff;padding:10px 26px;border-radius:12px;background:linear-gradient(90deg,#F2433A,#F37A70);box-shadow:0 0 0 3px #FBD0CB;justify-self:start}
+
+/* rings */
+.rings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,3vw,48px);text-align:center;margin-top:clamp(8px,3vh,32px)}
+.ring{display:grid;justify-items:center;gap:16px}
+.ring .dial{position:relative;width:min(100%,clamp(150px,19vw,290px));aspect-ratio:1}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .dial b{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(2.2rem,5.2vw,5.2rem);font-weight:700;letter-spacing:-.02em;color:#1D2030}
+.ring .arc{stroke-dasharray:0 100;transition:stroke-dasharray 1.1s cubic-bezier(.2,.8,.2,1) .2s}
+.slide.on .ring .arc{stroke-dasharray:var(--p) 100}
+.ring span{font-size:clamp(1rem,1.5vw,1.45rem);color:#2A2A33;max-width:14em;line-height:1.35}
+
+/* coral stats */
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3.8vw,58px)}
+.stat{border-top:1.5px solid #C9C9CC;padding-top:clamp(12px,2vh,20px);display:grid;gap:12px;align-content:start}
+.stat b{font-size:var(--t-num);font-weight:700;line-height:1;letter-spacing:-.02em;padding-bottom:.18em;margin-bottom:-.14em;background:linear-gradient(180deg,var(--coral),var(--coral2));-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
+.stat span{font-size:var(--t-small);color:#2A2A33;line-height:1.6;max-width:18em}
+
+/* insights list */
+.ins{display:grid;max-width:40rem}
+.ins .lead{font-size:clamp(1.15rem,1.6vw,1.6rem);font-weight:500;margin-bottom:clamp(14px,2.4vh,28px)}
+.ins .row{padding-block:clamp(10px,1.8vh,16px);border-bottom:1px solid #E1E1E3;color:#55555B;font-size:var(--t-small)}
+.ins .row:first-of-type{padding-top:0}
+
+/* operators slide */
+.op-img{border-radius:6px;overflow:hidden;max-width:min(100%,46rem,calc((100svh - 380px) * 16 / 9));background:#BFD7EA}
+.op-img video{display:block;width:100%;height:auto;aspect-ratio:16/9}
+.op-row{display:flex;flex-wrap:wrap;gap:clamp(16px,4vw,64px);align-items:center}
+.op-row>div{display:flex;align-items:center;gap:18px;font-size:var(--t-small);color:var(--ink);line-height:1.9}
+.op-row .th{width:clamp(52px,4.6vw,70px);aspect-ratio:1;border-radius:10px;overflow:hidden;flex:none;background:#BFD7EA}
+.op-row .th img{width:100%;height:100%;object-fit:cover}
+
+/* concept */
+.ba{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:clamp(16px,3vw,48px);align-items:start;max-width:56rem}
+.ba .k{font-size:var(--t-small);color:var(--muted);margin-bottom:6px}
+.ba .k.pu{color:var(--purple)}
+.ba p{font-size:clamp(1.15rem,1.7vw,1.7rem);line-height:1.35;font-weight:500}
+.ba .was p{color:#7A7A80}
+.ba i{font-style:normal;color:var(--muted);font-size:1.3em;padding-top:1.6em}
+.bridge{margin-inline:calc(var(--gutter) * -1);margin-top:clamp(8px,4vh,48px)}
+.bridge img{width:100%}
+.it{font-style:italic;color:#3A3A40}
+
+/* pipeline */
+/* one shared grid: label, bars, brace and caption rows line up across both phases */
+.pipe{display:grid;grid-template-columns:4fr 5fr;grid-template-rows:repeat(4,auto);grid-auto-flow:column;column-gap:clamp(8px,1vw,14px);row-gap:14px;align-items:start;margin-top:clamp(24px,8vh,96px)}
+.pipe>div{display:contents}
+.pipe .q{justify-self:center;align-self:end;line-height:1.2;font-size:clamp(1.05rem,1.6vw,1.6rem);color:var(--muted)}
+.pipe .q.on{color:var(--ink);font-weight:600}
+.segs{display:flex;gap:clamp(6px,1vw,14px);width:100%}
+.segs span{flex:1;height:clamp(16px,1.6vw,24px);border-radius:4px;background:#E6E6E8}
+.segs.pu span{background:linear-gradient(180deg,#7A5CF0,#5B3FD6);box-shadow:0 1px 0 rgb(0 0 0 / .1)}
+.brace{width:100%;height:20px;border:2px solid #1C1C1F;border-top:0;border-radius:0 0 10px 10px;position:relative}
+.brace::after{content:"";position:absolute;left:50%;top:100%;width:2px;height:clamp(28px,6vh,60px);background:#1C1C1F}
+.pipe .t{justify-self:center;text-align:center;margin-top:clamp(36px,7vh,72px);font-size:clamp(1rem,1.4vw,1.35rem);line-height:1.45;font-weight:500;max-width:16em}
+
+/* lime proto pill */
+.proto{justify-self:start;display:inline-flex;align-items:center;gap:12px;padding:12px 22px;border-radius:8px;background:linear-gradient(180deg,var(--lime),var(--lime2));color:#16160F;font-weight:600;font-size:clamp(.95rem,1.35vw,1.3rem);letter-spacing:.02em;text-transform:uppercase;box-shadow:0 3px 0 #8EA319,inset 0 1px 0 rgb(255 255 255 / .5)}
+.proto u{text-underline-offset:4px;text-decoration-thickness:2px}
+.prio{font-size:clamp(1.3rem,2vw,2rem);font-weight:500;color:var(--purple);line-height:1.5}
+.hr{height:1px;background:#C9C9CC;max-width:24rem}
+
+/* pivot */
+.chg{display:grid;gap:clamp(14px,2.4vh,22px)}
+.chg .k{font-size:var(--t-small);color:#BDBDC2}
+.chg .r{display:grid;grid-template-columns:minmax(8rem,.25fr) minmax(0,1fr);gap:24px;align-items:baseline;font-size:clamp(1rem,1.4vw,1.35rem)}
+.chg .r>span:first-child{border-left:1.5px solid #8A8A90;padding-left:12px;color:#BDBDC2}
+.chg .r:nth-child(3)>span:first-child{border-color:var(--lav)}
+.chg em{font-style:normal}
+
+/* debate */
+.deb{display:grid;gap:clamp(18px,3.4vh,34px);max-width:40rem}
+.deb div{display:grid;gap:6px}
+.deb dt{font-size:var(--t-small);color:#55555B}
+.deb dd{margin:0;font-size:clamp(1.05rem,1.45vw,1.4rem);font-weight:500}
+
+/* decisions */
+.dec{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,3vw,48px)}
+.dec>div{display:grid;gap:18px;align-content:start}
+.dec p{font-size:clamp(1rem,1.35vw,1.3rem);line-height:1.45}
+.dec p b{font-weight:600}
+
+/* V3 prototype: centred, sized to fit the screen height */
+.proto-vid{justify-self:center;width:min(100%,calc((100svh - 300px) * 1600 / 862));margin-top:clamp(0px,1vh,12px)}
+.proto-vid video{display:block;width:100%;height:auto;aspect-ratio:1600/862}
+
+/* side-by-side prototype clips share one shape so they line up */
+.pair-vid{display:block;width:100%;height:auto;aspect-ratio:1.875;object-fit:cover;object-position:center}
+
+/* customer trends: both screenshots share one height that fits the screen */
+.trend{--th:min(calc(100svh - 455px),calc((100vw - 2 * var(--gutter) - 20px) / 2.26));display:flex;gap:20px;align-items:flex-start;margin-top:4px}
+.trend .shot{border-radius:6px;background:#0B0B0D;flex:none}
+.trend img{height:max(300px,var(--th));width:auto}
+@media (max-width:700px){.trend{flex-direction:column}.trend .shot{flex:auto}.trend img{width:100%;height:auto}}
+
+/* impact */
+.chart{display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) minmax(0,.9fr);gap:clamp(20px,4vw,64px);align-items:end;margin-top:clamp(12px,4vh,48px)}
+.pair{display:grid;gap:14px;justify-items:center}
+.pair .cols2{display:flex;gap:clamp(10px,1.6vw,22px);align-items:flex-end;height:clamp(160px,30vh,300px)}
+.pair .bar2{width:clamp(48px,6vw,92px);height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px}
+.pair .bar2 i{display:block;width:100%;border-radius:4px;height:0;transition:height 1s cubic-bezier(.2,.8,.2,1) .2s}
+.slide.on .pair .bar2 i{height:var(--h)}
+.pair .bar2 b{font-weight:700;font-size:clamp(.95rem,1.25vw,1.2rem)}
+.pair .g i{background:linear-gradient(180deg,#E5E5E7,#CDCDD0)}
+.pair .l i{background:linear-gradient(180deg,var(--lime),var(--lime2))}
+.pair span{font-size:clamp(1rem,1.3vw,1.25rem)}
+.big15{display:grid;justify-items:end;text-align:right;gap:4px}
+.big15 b{font-size:clamp(4rem,9vw,9rem);font-weight:500;line-height:.9;letter-spacing:-.04em}
+.big15 span{font-size:var(--t-small);line-height:2}
+.foot{font-size:.8rem;color:#8A8A90;text-align:right}
+
+/* closing */
+.end{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;font-family:var(--ui)}
+.end a{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-weight:500;padding:14px 22px;border-radius:999px;border:1px solid #3A3A40;color:#fff}
+.end a.main{background:var(--lime);color:#111;border-color:var(--lime)}
+
+
+/* fit media to the height left on screen (desktop); phones scroll instead */
+.fh{max-width:100%}
+.fh img.sh{border-radius:4px;box-shadow:0 0 0 1px rgb(0 0 0 / .08),0 18px 40px -24px rgb(0 0 0 / .35)}
+.in-slide:not(.center) .fh{justify-self:start}
+.center .fh{justify-self:center}
+@media (min-width:901px){
+  /* image takes the space left under the text, so it never runs under the arrows */
+  .in-slide.fill{display:flex;flex-direction:column;height:100%}
+  .in-slide.fill:not(.center){align-items:flex-start}
+  .in-slide.fill.center{align-items:center}
+  .in-slide.fill>.fh{flex:1 1 0;min-height:220px;display:flex;align-items:flex-start;justify-content:center;width:100%}
+  .in-slide.fill:not(.center)>.fh{justify-content:flex-start}
+  .in-slide.fill>.fh img{max-height:100%;width:auto;max-width:100%}
+  .cover .shot{width:min(100%,62rem,calc((100svh - var(--bar) - 330px) * 1600 / 872))}
+  .ring .dial{width:min(100%,clamp(150px,19vw,290px),max(120px,calc(100svh - var(--bar) - 610px)))}
+  .bridge img{max-height:calc(100svh - var(--bar) - 610px);width:100%;object-fit:contain;object-position:left center}
+  .dev-fit{max-width:min(34rem,calc((100svh - var(--bar) - 275px) * .91 + 20px))!important}
+  .dec-fit{max-width:calc((100svh - var(--bar) - var(--fh,420px)) * var(--ar,1.84) * 2 + 48px)}
+}
+@media (max-width:900px){
+  .cols,.cols.half,.dec{grid-template-columns:minmax(0,1fr)}
+  .chart{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .big15{grid-column:1 / -1;justify-items:start;text-align:left}
+  .hint{display:none}
+}
+@media (max-width:700px){
+  .rings,.stats{grid-template-columns:minmax(0,1fr)}
+  .ring{grid-template-columns:auto minmax(0,1fr);justify-items:start;text-align:left;align-items:center}
+  .ring .dial{width:120px}
+  .ring .dial b{font-size:1.9rem}
+  .ba{grid-template-columns:minmax(0,1fr)}
+  .ba i{display:none}
+  .pipe{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-auto-flow:row;row-gap:12px}
+  .pipe .t{margin-top:48px}
+  .pipe>div:nth-child(2)>.q{margin-top:36px}
+  .chg .r{grid-template-columns:minmax(0,1fr);gap:6px}
+  .tbl>div{grid-template-columns:minmax(0,1fr);gap:2px}
+  .bar .title{display:none}
+  .cover .bg{opacity:.35}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="in">
+    <a class="mark" href="./">Haresh<span>.</span></a>
+    <span class="title">Agent Builder · Sense HQ case study</span>
+    <a href="./#work">← All work</a>
+  </div>
+  <div class="progress" id="progress"></div>
+</div>
+
+<main class="deck" id="deck" aria-roledescription="slide deck" aria-label="Agent Builder case study">
+
+  <!-- 1 Cover -->
+  <section class="slide navy" data-chapter="Overview" aria-label="Cover">
+    <div class="cover">
+      <img class="bg" src="media/ab/network.webp" alt="" aria-hidden="true">
+      <span class="pill">Sense case study</span>
+      <h1>Empowering Workflows with Agent Builder</h1>
+      <div class="shot"><video src="media/agent-builder.mp4" poster="media/agent-builder.jpg" muted loop playsinline preload="auto" aria-label="Agent Builder planning a candidate screening agent from one prompt"></video></div>
+    </div>
+  </section>
+
+  <!-- 2 Context -->
+  <section class="slide" data-chapter="Overview" aria-label="Context">
+    <div class="in-slide">
+      <span class="label">Context</span>
+      <div class="cols" style="margin-top:clamp(8px,4vh,48px)">
+        <div class="ctx">
+          <p>This case study details how <b>we built Agent Builder</b> to unlock a critical <b>AI adoption barrier</b> at Sense HQ.</p>
+          <p>Sense HQ is an <span class="pu">AI-powered talent engagement platform used by enterprises and staffing agencies</span> to automate hiring, from candidate discovery and screening to long-term nurturing.</p>
+        </div>
+        <dl class="tbl">
+          <div><dt>Role</dt><dd>Lead Product Designer</dd></div>
+          <div><dt>Responsibilities</dt><dd>Led design from 0 → 1: discovery, strategy, end-to-end UX/UI, AI design system, and cross-pillar design language.</dd></div>
+          <div><dt>Collaborators</dt><dd>4 Product Managers (AI Agent Builder, Workflows, Discover and Voice/Video AI), UX Research, Design System, Data Science and Engineering</dd></div>
+          <div><dt>Timeline</dt><dd>4 months, kickoff to pilot launch</dd></div>
+          <div><dt>Impact</dt><dd>AI adoption <span class="pu">38% → 66%</span> · Engagement <span class="pu">44% → 71%</span> · <span class="pu">15 hrs saved</span> per recruiter, every week</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 Problem -->
+  <section class="slide" data-chapter="The problem" aria-label="The problem">
+    <div class="in-slide">
+      <span class="label">The Problem</span>
+      <div class="cols mid" style="margin-top:clamp(8px,3vh,32px)">
+        <div class="stack" style="gap:28px">
+          <p class="b" style="color:var(--ink)">This is our <span class="pu">Workflow Builder</span>, our core platform that helps recruiters automate the whole hiring lifecycle: sourcing, screening, evaluation, messaging and voice interviews.</p>
+          <div class="qt red"><p>Genuinely capable product, but it demanded a lot of manual effort and time</p></div>
+        </div>
+        <figure class="shot"><video src="media/ab/problem-workflow.mp4" poster="media/ab/problem-workflow.jpg" muted loop playsinline preload="metadata" aria-label="Scrolling through one reactivation workflow in the Workflow Builder: greeting, email check, work history, pay, travel limit, rehire checks and status updates, every step configured by hand"></video></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 By early 2025 -->
+  <section class="slide" data-chapter="The problem" aria-label="By early 2025">
+    <div class="in-slide">
+      <span class="redpill">By Early 2025</span>
+      <p class="h-sm" style="font-weight:500;max-width:34ch">We added multiple AI features like Voice AI screening and automated reach-outs, but product adoption and hiring outcomes started to <span class="rd">decline</span>.</p>
+      <div class="rings">
+        <div class="ring"><div class="dial"><svg viewBox="0 0 36 36" aria-hidden="true"><defs><linearGradient id="rg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F3A196"/><stop offset="1" stop-color="#E2483C"/></linearGradient></defs><circle cx="18" cy="18" r="15.9155" fill="none" stroke="#E6E6E8" stroke-width="2.2"/><circle class="arc" cx="18" cy="18" r="15.9155" fill="none" stroke="url(#rg1)" stroke-width="2.2" stroke-linecap="round" pathLength="100" style="--p:38"/></svg><b>38%</b></div><span>Sense AI adoption stagnated at 38%</span></div>
+        <div class="ring"><div class="dial"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15.9155" fill="none" stroke="#E6E6E8" stroke-width="2.2"/><circle class="arc" cx="18" cy="18" r="15.9155" fill="none" stroke="url(#rg1)" stroke-width="2.2" stroke-linecap="round" pathLength="100" style="--p:62"/></svg><b>62%</b></div><span>of recruiter time spent on manual tasks</span></div>
+        <div class="ring"><div class="dial"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15.9155" fill="none" stroke="#E6E6E8" stroke-width="2.2"/><circle class="arc" cx="18" cy="18" r="15.9155" fill="none" stroke="url(#rg1)" stroke-width="2.2" stroke-linecap="round" pathLength="100" style="--p:47"/></svg><b>47%</b></div><span>of customers reported slower hiring cycles</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 Finding the gap -->
+  <section class="slide" data-chapter="Finding the gap" aria-label="Finding the gap">
+    <div class="in-slide">
+      <span class="label">Finding the Gap</span>
+      <h2 class="h" style="margin-top:clamp(8px,3vh,32px)">The data showed decline. <span class="rd">Nothing showed why.</span></h2>
+      <p class="s" style="color:var(--body)">Adoption, manual time, and hiring velocity were all tracked at the outcome level.</p>
+      <p class="s" style="color:var(--body)">I worked with our data analytics team to instrument the setup flow and answer three questions:</p>
+      <ol class="rl">
+        <li>Where in the setup flow do recruiters stop?</li>
+        <li>How long does one workflow actually take to build?</li>
+        <li>Is the drop-off spread evenly, or concentrated at specific modules?</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 6 Findings -->
+  <section class="slide" data-chapter="Finding the gap" aria-label="Findings">
+    <div class="in-slide">
+      <span class="label">Findings</span>
+      <h2 class="h" style="margin-top:clamp(8px,4vh,48px);max-width:24ch">They weren't rejecting automation. They were abandoning it mid-setup.</h2>
+      <div class="stats" style="margin-top:clamp(12px,5vh,56px)">
+        <div class="stat"><b>64%</b><span>of recruiters abandoned automation during setup</span></div>
+        <div class="stat"><b>2.4 hrs</b><span>average time to configure a single workflow</span></div>
+        <div class="stat"><b>49%</b><span>of drop-offs at field mapping and trigger selection</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 Customer trends -->
+  <section class="slide" data-chapter="Finding the gap" aria-label="Customer trends">
+    <div class="in-slide">
+      <span class="label">Customer trends</span>
+      <p class="b" style="max-width:48rem;color:var(--ink)">Ran 18 months of support tickets through Claude to cluster by theme, then joined Clarity session data and Amplitude funnels into one view.</p>
+      <div class="qt" style="border-color:#5B6CF0"><p style="color:#5B6CF0;font-size:clamp(1rem,1.35vw,1.3rem)">Overall data said setup, not output quality — the opposite of what the team assumed.</p></div>
+      <div class="trend">
+        <figure class="shot"><img src="media/ab/tickets-dashboard-hd.webp" width="2000" height="1260" alt="Workflows ticket analysis dashboard: 64% setup abandonment, 2.4 hours average time to configure, 187 dead clicks, 41 stale drafts, top UX concerns, customer quotes, dead click targets, exit destinations and a setup funnel from 1,284 builders opened to 236 published" loading="lazy"></figure>
+        <figure class="shot"><img src="media/ab/tickets-detail-hd.webp" width="840" height="1267" alt="Detail panel for a high-severity concern: recruiters abandon workflow setup at field mapping across six accounts, with customer quotes, affected product areas and sources" loading="lazy"></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 User insights -->
+  <section class="slide" data-chapter="Finding the gap" aria-label="User insights">
+    <div class="in-slide">
+      <span class="label">User Insights</span>
+      <div class="ins">
+        <p class="lead">12 User Interviews &nbsp;•&nbsp; 48 Accounts Survey</p>
+        <div class="row">Understand mental model</div>
+        <div class="row">Trust gaps, or cognitive load?</div>
+        <div class="row">Where does automation feel helpful, and where risky?</div>
+      </div>
+      <div class="stack" style="gap:22px;margin-top:clamp(8px,3vh,32px);max-width:44rem">
+        <div class="qt"><p>"I need to learn this before it helps me."</p><cite class="m">Healthcare staffing · 400 seats</cite></div>
+        <div class="qt"><p>"It's faster to just do it manually than set the thing up."</p><cite class="m">Light industrial · 600 seats</cite></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 System operators -->
+  <section class="slide cream" data-chapter="Finding the gap" aria-label="System operators">
+    <div class="in-slide">
+      <span class="label" style="letter-spacing:.06em">Their biggest frustration was that they had turned into system operators.</span>
+      <figure class="op-img"><video src="media/ab/operator.mp4" poster="media/ab/operator.jpg" muted loop playsinline preload="metadata" aria-label="Animated illustration of a frustrated recruiter at a laptop, throwing up his hands and pointing at a wall of job roles"></video></figure>
+      <div class="op-row">
+        <div><span class="th"><img src="media/ab/op-thumb-1.webp" alt="" aria-hidden="true"></span><span>12+ open roles. 100+ candidates or more</span></div>
+        <div><span class="th"><img src="media/ab/op-thumb-2.webp" alt="" aria-hidden="true"></span><span>Create workflows → Map fields →<br>Configure rules → Select triggers</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 Workshop -->
+  <section class="slide" data-chapter="Finding the gap" aria-label="EPD workshop">
+    <div class="in-slide fill">
+      <span class="label">5 Day EPD workshop</span>
+      <h2 class="h wide" style="font-size:var(--t-h-sm);max-width:34ch">I presented the research — where users were stopping, why they stopped, and what it had cost us.</h2>
+      <p class="s" style="color:var(--body)">Stakeholders, Product Leadership &amp; Engineering Leadership</p>
+      <p class="s" style="color:var(--body)">Two days of hands-on work followed — requirements, concepts, feature scope, and timeline.</p>
+      <figure class="fh"><img class="sh" src="media/ab/workshop.webp" alt="Workshop board: AI adoption problem and approach, primary persona Megan, a senior recruiter, and goals with success metrics" loading="lazy"></figure>
+    </div>
+  </section>
+
+  <!-- 11 Root cause -->
+  <section class="slide dark" data-chapter="Finding the gap" aria-label="Root cause">
+    <div class="in-slide">
+      <span class="label">👀 Root Cause</span>
+      <h2 class="h" style="margin-top:clamp(8px,4vh,48px);max-width:22ch">We built for system logic, not recruiter logic.</h2>
+      <p class="b" style="max-width:40rem">Recruiters think in outcomes, not steps — "screen these candidates," "move fast," "don't miss anyone."</p>
+      <p class="b" style="max-width:40rem">That gap forced manual configuration on every task, which created cognitive load and eroded trust before value ever landed.</p>
+      <div class="qt big" style="margin-top:clamp(12px,5vh,56px);max-width:36rem"><p>AI adoption didn't fail because the AI was wrong. It failed because it demanded effort before it proved value.</p></div>
+    </div>
+  </section>
+
+  <!-- 12 Concept -->
+  <section class="slide" data-chapter="Concept" aria-label="Concept">
+    <div class="in-slide">
+      <span class="label">Concept</span>
+      <h2 class="h" style="margin-top:clamp(8px,3vh,32px)">Hiring outcomes, without thinking in workflows.</h2>
+      <p class="s it" style="max-width:38rem">Recruiters would describe what they wanted. The system would handle everything underneath — fields, triggers, branches, sequencing.</p>
+      <div class="ba">
+        <div class="was"><div class="k">before</div><p>Build the automation, then get the outcome</p></div>
+        <i aria-hidden="true">→</i>
+        <div><div class="k pu">after</div><p>Describe the tasks, the system builds the automation</p></div>
+      </div>
+      <div class="bridge"><img src="media/ab/bridge.png" alt="Illustration: a dashed bridge between two cliffs, from building automations to describing outcomes" loading="lazy"></div>
+    </div>
+  </section>
+
+  <!-- 13 Pipeline -->
+  <section class="slide" data-chapter="Concept" aria-label="Pipeline">
+    <div class="in-slide">
+      <span class="label">Pipeline</span>
+      <div class="pipe">
+        <div><span class="q">Q4'25</span><div class="segs"><span></span><span></span><span></span><span></span></div><div class="brace"></div><p class="t">Pilot launch with 70 enterprise customers</p></div>
+        <div><span class="q on">Q1'26 onwards</span><div class="segs pu"><span></span><span></span><span></span><span></span><span></span></div><div class="brace"></div><p class="t">Full-fledged launch</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 Ideation -->
+  <section class="slide" data-chapter="Concept" aria-label="Ideation">
+    <div class="in-slide">
+      <span class="label">Ideation</span>
+      <div class="cols mid" style="margin-top:clamp(4px,2vh,24px)">
+        <div class="stack" style="gap:22px">
+          <h2 class="h">First few design bets</h2>
+          <p class="s">I pushed multiple prototypes through Lovable to bring the concept to life.</p>
+          <p class="s" style="color:var(--ink)">I played with different variants, prioritising aspects like speed, transparency and control in building hiring flows.</p>
+          <div class="hr"></div>
+        </div>
+        <figure class="dev-fit" style="max-width:34rem;justify-self:end;width:100%"><div class="device light"><img src="media/ab/ideation-hd.webp" alt="Early Lovable prototype: AI Recruiting Agents with browsable templates such as Candidate Engagement" loading="lazy"></div></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15 V1 -->
+  <section class="slide" data-chapter="V1: Transparency" aria-label="Version 1">
+    <div class="in-slide">
+      <span class="label">Version 1 <span class="of">of 3</span></span>
+      <div class="cols top-al">
+        <div class="stack" style="gap:22px">
+          <h2 class="h" style="max-width:26ch;margin-bottom:clamp(4px,1.4vh,14px)">I bet that transparency would earn trust.</h2>
+          <p class="s">If the system was going to build the automation, recruiters needed to see what it was doing.</p>
+          <p class="s" style="color:var(--ink)">So V1 exposed everything — every control, every agent decision, every customization path.</p>
+          <div class="hr"></div>
+          <p class="prio">Transparency › Control › Speed</p>
+          <span class="proto" style="margin-top:clamp(4px,2vh,20px)">✦ <u>V1 prototype</u></span>
+        </div>
+        <figure><div class="shot"><video src="media/ab/v1-hd.mp4" poster="media/ab/v1-hd.jpg" muted loop playsinline preload="metadata" aria-label="V1 prototype: a recruiter types a request on the Build Agents screen, then Sense AI explains its plan in chat while the agent flow builds itself on the canvas, flagging one node that needs attention before publishing"></video></div><figcaption>Every agent action surfaced, every step editable before publish.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16 V1 results -->
+  <section class="slide" data-chapter="V1: Transparency" aria-label="V1 results">
+    <div class="in-slide">
+      <span class="label">V1 shipped to 76 pilot accounts</span>
+      <h2 class="h" style="max-width:26ch">I was wrong. Transparency didn't build trust — it built overhead.</h2>
+      <div class="stats" style="margin-top:clamp(8px,3vh,32px)">
+        <div class="stat"><b>18–22%</b><span>of AI actions ran automatically. The rest waited for a human.</span></div>
+        <div class="stat"><b>72%</b><span>of AI interactions were user-triggered — clicks and manual prompts.</span></div>
+        <div class="stat"><b>Ignored</b><span>AI suggestions were dismissed rather than reviewed.</span></div>
+      </div>
+      <div class="stack" style="gap:22px;margin-top:clamp(8px,3vh,32px)">
+        <div class="qt"><p>"It's just another system to manage."</p><cite>Recruiting Ops Lead - Corporate</cite></div>
+        <div class="qt"><p>"I want to set it up once and forget about it."</p><cite>Recruiter - Staffing Agency</cite></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 17 Re-evaluation -->
+  <section class="slide" data-chapter="V1: Transparency" aria-label="Re-evaluation">
+    <div class="in-slide">
+      <span class="label">Re-evaluation</span>
+      <h2 class="h" style="margin-top:clamp(8px,3vh,32px);max-width:26ch">Three questions I couldn't answer with a better assistant.</h2>
+      <ol class="rl">
+        <li>What if recruiters never had to build workflows at all?</li>
+        <li>What if intent alone was enough for AI to act?</li>
+        <li>What if AI stopped assisting and started owning outcomes?</li>
+      </ol>
+      <span class="proto" style="margin-top:clamp(12px,6vh,72px)">✦ Competitor <u>research</u></span>
+    </div>
+  </section>
+
+  <!-- 18 Pivot -->
+  <section class="slide dark" data-chapter="V2: Agents" aria-label="The pivot">
+    <div class="in-slide">
+      <span class="label">🚀 The Pivot</span>
+      <h2 class="h" style="margin-top:clamp(8px,4vh,48px)">V1 Assistants → Agents</h2>
+      <div class="chg">
+        <span class="k">What changed</span>
+        <div class="r"><span>V1 Assistant →</span><span>Describe <em class="rd">tasks</em> → agent proposes → <em class="rd">approve each step</em> → Publish</span></div>
+        <div class="r"><span>V2 Agent →</span><span>Describe the <em class="lv">outcome</em> → <em class="lv">agent executes</em> → review what happened</span></div>
+      </div>
+      <div class="qt big" style="margin-top:clamp(12px,6vh,64px);max-width:34rem"><p>V1 didn't fail because the AI was wrong. It failed because it was complex to understand.</p></div>
+    </div>
+  </section>
+
+  <!-- 19 V2 -->
+  <section class="slide" data-chapter="V2: Agents" aria-label="Version 2">
+    <div class="in-slide">
+      <span class="label">Version 2 <span class="of">of 3</span></span>
+      <div class="cols top-al">
+        <div class="stack" style="gap:22px">
+          <h2 class="h" style="max-width:26ch;margin-bottom:clamp(4px,1.4vh,14px)">So, I removed workflows entirely</h2>
+          <p class="s">No upfront setup. No configuration before value. Describe the outcome, the agent builds and runs it.</p>
+          <p class="s" style="color:var(--ink)">Recruiters would see value in the first session. Adoption would follow.</p>
+          <div class="hr"></div>
+          <p class="prio">Speed › Transparency › Control</p>
+          <span class="proto" style="margin-top:clamp(4px,2vh,20px)">✦ <u>V2 prototype</u></span>
+        </div>
+        <figure><div class="shot"><video src="media/ab/v2-hd.mp4" poster="media/ab/v2-hd.jpg" muted loop playsinline preload="metadata" aria-label="V2 prototype: the recruiter fills in one sentence and clicks Create; the agent plans seven modules on its own, from personality and FAQs to job-specific questions, scheduling and a closing statement, and opens each one for review"></video></div><figcaption>Only intent. No configurations.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 20 V2 debate -->
+  <section class="slide" data-chapter="V2: Agents" aria-label="Internal debate">
+    <div class="in-slide">
+      <span class="label">Version 2 <span class="hot">Internal Debate</span></span>
+      <h2 class="h" style="font-weight:500">Pushbacks from three directions.</h2>
+      <dl class="deb">
+        <div><dt>Product →</dt><dd>We would need enterprise control</dd></div>
+        <div><dt>Engineering →</dt><dd>Flagged black-box behaviour</dd></div>
+        <div><dt>Leadership →</dt><dd>Feared trust could affect adoption</dd></div>
+      </dl>
+      <p class="h-sm" style="font-size:clamp(1.1rem,1.5vw,1.5rem);max-width:44rem;margin-top:clamp(0px,1.4vh,32px)">Every objection pointed back toward more visibility and control — the thing V1 had already proved didn't work.</p>
+    </div>
+  </section>
+
+  <!-- 21 V3 -->
+  <section class="slide dark" data-chapter="V3: Shipped" aria-label="Version 3">
+    <div class="in-slide">
+      <span class="label">❇️ Version 3</span>
+      <h2 class="h" style="font-weight:500;max-width:30ch">I owned two critical design decisions</h2>
+      <div class="dec dec-fit" style="--fh:540px;--ar:1.84">
+        <div><figure class="shot"><img src="media/ab/v3-modules-hd.webp" alt="V3: only key modules shown, already configured, in the candidate sourcing agent" loading="lazy"></figure><p><b>1.</b> Show only key modules, and they come configured. Recruiters approve or change only what matters.</p></div>
+        <div><figure class="shot"><img src="media/ab/v3-test-hd.webp" alt="V3: the Test simulator with voice, web chat and SMS channels and speech settings" loading="lazy"></figure><p><b>2.</b> I introduced a simulator environment (Test). Users run the agent in real-time scenarios and make changes wherever necessary.</p></div>
+      </div>
+      <div class="qt big" style="margin-top:clamp(8px,3vh,32px)"><p>The same room that wanted V1 back signed this off.</p></div>
+    </div>
+  </section>
+
+  <!-- 22 V3 prototype -->
+  <section class="slide soft" data-chapter="V3: Shipped" aria-label="V3 prototype">
+    <div class="in-slide">
+      <span class="label">❇️ Prototype</span>
+      <figure class="shot proto-vid"><video src="media/ab/v3-proto.mp4" poster="media/ab/v3-proto.jpg" muted loop playsinline preload="metadata" aria-label="V3 prototype: the recruiter picks an example, the agent plans its modules, the recruiter reviews greeting, scheduling and data collection settings, runs a test voice call, reads the call summary and publishes the agent"></video></figure>
+    </div>
+  </section>
+
+  <!-- 23 Launch -->
+  <section class="slide dark" data-chapter="V3: Shipped" aria-label="Launch">
+    <div class="in-slide center fill">
+      <span class="label">🚀 Launch</span>
+      <figure class="fh" style="max-width:min(100%,30rem)"><img src="media/ab/launch.webp" alt="Slack shout-out from leadership thanking the Agent Builder team for bringing it to life" loading="lazy" style="border-radius:4px"></figure>
+    </div>
+  </section>
+
+  <!-- 24 Impact -->
+  <section class="slide dark" data-chapter="Impact" aria-label="Impact">
+    <div class="in-slide">
+      <span class="label">Impact</span>
+      <h2 class="h">Adoption nearly doubled.</h2>
+      <p class="s">Within 4 months of launch, across 200 enterprise accounts.</p>
+      <div class="chart">
+        <div class="pair"><div class="cols2"><div class="bar2 g"><b>38%</b><i style="--h:46%"></i></div><div class="bar2 l"><b>66%</b><i style="--h:79%"></i></div></div><span>AI Adoption</span></div>
+        <div class="pair"><div class="cols2"><div class="bar2 g"><b>44%</b><i style="--h:53%"></i></div><div class="bar2 l"><b>71%</b><i style="--h:85%"></i></div></div><span>Candidate Engagement</span></div>
+        <div class="big15"><b>+15</b><span>hours saved<br>per recruiter<br>every week</span></div>
+      </div>
+      <p class="foot">Based on metrics from the Q1 product town hall</p>
+    </div>
+  </section>
+
+  <!-- 25 Customer stories -->
+  <section class="slide dark" data-chapter="Impact" aria-label="Customer stories">
+    <div class="in-slide fill">
+      <span class="label">Customer Stories</span>
+      <figure class="fh" style="max-width:72rem"><img src="media/ab/stories.webp" alt="Customer stories: 75% better response rates, 15+ hours saved per recruiter per week, 92% more engagement; 60% candidate response rate and 19 hours saved per week; a customer quote on fast turnaround" loading="lazy"></figure>
+    </div>
+  </section>
+
+  <!-- 26 Beyond -->
+  <section class="slide dark" data-chapter="Impact" aria-label="It didn't end there">
+    <div class="in-slide">
+      <span class="label">✨ It didn't end there..</span>
+      <h2 class="h" style="font-weight:500;max-width:28ch">Agent Builder became the architecture for two more successful products.</h2>
+      <div class="dec dec-fit" style="margin-top:clamp(8px,3vh,32px);--fh:470px;--ar:1.875">
+        <div><figure class="shot"><video class="pair-vid" src="media/ab/interviewer.mp4" poster="media/ab/interviewer.jpg" muted loop playsinline preload="metadata" aria-label="AI Interviewer prototype: a recruiter builds a screening round, picks an avatar and voice, then the candidate accepts the invite, verifies their identity with a photo and starts a video interview with Grace, the AI interviewer"></video></figure><p><b>AI Interviewer -</b> Video interviews with identity verification and first-round screening — a step beyond voice.</p></div>
+        <div><figure class="shot"><video class="pair-vid" src="media/ab/receptionist.mp4" poster="media/ab/receptionist.jpg" muted loop playsinline preload="metadata" aria-label="AI Receptionist prototype: a recruiter sets intents and routing rules, maps fields to the ATS, then reviews call performance and the routed call log"></video></figure><p><b>AI Receptionist -</b> An inbound call agent that answers candidate queries without a recruiter picking up.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 27 Reflection 1 -->
+  <section class="slide dark" data-chapter="Reflection" aria-label="Reflection: MLP">
+    <div class="in-slide center fill">
+      <span class="label">Reflection</span>
+      <h2 class="h" style="font-weight:500;margin-top:clamp(8px,3vh,32px)">Keep cutting it down to MLP</h2>
+      <p class="b" style="max-width:48rem">I was laser-focused on shipping a minimum lovable product, and that meant V1 reached real recruiters in weeks, not quarters. What they touched and ignored became the platform for everything after.</p>
+      <figure class="fh" style="max-width:64rem;margin-top:clamp(8px,4vh,48px)"><img src="media/ab/reflect-mlp.webp" alt="V1 Build Agents screen with a prompt to create a sourcing campaign" loading="lazy"></figure>
+    </div>
+  </section>
+
+  <!-- 28 Reflection 2 -->
+  <section class="slide dark" data-chapter="Reflection" aria-label="Reflection: annotations">
+    <div class="in-slide center fill">
+      <span class="label">Reflection</span>
+      <h2 class="h" style="font-weight:500;margin-top:clamp(8px,3vh,32px);max-width:24ch">Interaction documents are not contextual</h2>
+      <p class="b" style="max-width:52rem">I noticed my engineers sometimes missed specific design details even though they were in the interaction document, so I <span class="lm">introduced contextual screen-level annotations</span> that gave engineers clearer, in-context guidance beyond static interaction documentation.</p>
+      <figure class="fh" style="max-width:64rem;margin-top:clamp(8px,4vh,48px)"><img src="media/ab/reflect-annotations.webp" alt="Figma file with dev-ready prototype pages and screen-level annotations next to the design" loading="lazy"></figure>
+    </div>
+  </section>
+
+  <!-- 29 End -->
+  <section class="slide dark" data-chapter="Reflection" aria-label="The end">
+    <div class="in-slide center" style="align-content:center;min-height:60vh">
+      <span class="label">The End</span>
+      <h2 class="h" style="font-weight:500">Thanks for reading.</h2>
+      <div class="end" style="margin-top:12px">
+        <a class="main" href="./#work">See more work</a>
+        <a href="./">Ask Haresh's agent something else</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="ctrl left">
+  <button class="chap" id="chap" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="chapName">Overview</span></button>
+</div>
+<div class="menu" id="menu" hidden></div>
+<div class="ctrl right">
+  <span class="count" aria-hidden="true"><b id="num">01</b> / <span id="total">29</span></span>
+  <button class="nav prev" id="prev" type="button" aria-label="Previous slide"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button class="nav next" id="next" type="button" aria-label="Next slide"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+<p class="hint" id="hint">Use <kbd>←</kbd> <kbd>→</kbd> to move through slides</p>
+<p class="sr" id="live" aria-live="polite"></p>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var N = slides.length, cur = -1;
+  var prev = document.getElementById('prev'), next = document.getElementById('next');
+  var num = document.getElementById('num'), live = document.getElementById('live'), bar = document.getElementById('progress');
+  var chap = document.getElementById('chap'), chapName = document.getElementById('chapName'), menu = document.getElementById('menu'), hint = document.getElementById('hint');
+  function pad(n){ return String(n).padStart(2, '0'); }
+  document.getElementById('total').textContent = pad(N);
+
+  var chapters = [];
+  slides.forEach(function(s, i){ var c = s.getAttribute('data-chapter'); if (!chapters.length || chapters[chapters.length-1].name !== c) chapters.push({ name:c, at:i }); });
+  chapters.forEach(function(c){
+    var b = document.createElement('button'); b.type = 'button';
+    var t = document.createElement('em'); t.style.fontStyle = 'normal'; t.textContent = c.name;
+    var n = document.createElement('span'); n.textContent = pad(c.at + 1);
+    b.appendChild(t); b.appendChild(n);
+    b.addEventListener('click', function(){ go(c.at); closeMenu(); chap.focus(); });
+    menu.appendChild(b); c.btn = b;
+  });
+  function openMenu(){ menu.hidden = false; chap.setAttribute('aria-expanded', 'true'); (menu.querySelector('[aria-current="true"]') || menu.firstChild).focus(); }
+  function closeMenu(){ menu.hidden = true; chap.setAttribute('aria-expanded', 'false'); }
+  chap.addEventListener('click', function(){ menu.hidden ? openMenu() : closeMenu(); });
+  document.addEventListener('click', function(e){ if (!menu.hidden && !menu.contains(e.target) && !chap.contains(e.target)) closeMenu(); });
+
+  function go(i){
+    i = Math.max(0, Math.min(N - 1, i));
+    if (i === cur) return;
+    slides.forEach(function(s, j){
+      s.classList.toggle('on', j === i); s.classList.toggle('past', j < i);
+      s.setAttribute('aria-hidden', j === i ? 'false' : 'true');
+      if (j === i) s.removeAttribute('inert'); else s.setAttribute('inert', '');
+      s.querySelectorAll('video').forEach(function(v){ if (j === i){ var p = v.play(); if (p && p.catch) p.catch(function(){}); } else v.pause(); });
+    });
+    slides[i].scrollTop = 0;
+    document.body.classList.toggle('on-dark', /\b(dark|navy)\b/.test(slides[i].className));
+    cur = i;
+    num.textContent = pad(i + 1);
+    prev.disabled = i === 0; next.disabled = i === N - 1;
+    bar.style.transform = 'scaleX(' + ((i + 1) / N) + ')';
+    var c = slides[i].getAttribute('data-chapter');
+    chapName.textContent = c;
+    chapters.forEach(function(ch){ ch.btn.setAttribute('aria-current', ch.name === c ? 'true' : 'false'); });
+    live.textContent = 'Slide ' + (i + 1) + ' of ' + N + ': ' + slides[i].getAttribute('aria-label');
+    try { history.replaceState(null, '', '#' + (i + 1)); } catch(e){}
+    if (i > 0) hint.style.opacity = 0;
+  }
+  prev.addEventListener('click', function(){ go(cur - 1); });
+  next.addEventListener('click', function(){ go(cur + 1); });
+  addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && !menu.hidden){ closeMenu(); chap.focus(); return; }
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)){ e.preventDefault(); go(cur + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || (e.key === ' ' && e.shiftKey)){ e.preventDefault(); go(cur - 1); }
+    else if (e.key === 'Home'){ e.preventDefault(); go(0); }
+    else if (e.key === 'End'){ e.preventDefault(); go(N - 1); }
+  });
+  var sx = 0, sy = 0, tracking = false, deck = document.getElementById('deck');
+  deck.addEventListener('pointerdown', function(e){ if (e.pointerType === 'mouse') return; tracking = true; sx = e.clientX; sy = e.clientY; });
+  deck.addEventListener('pointerup', function(e){
+    if (!tracking) return; tracking = false;
+    var dx = e.clientX - sx, dy = e.clientY - sy;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.4) go(cur + (dx < 0 ? 1 : -1));
+  });
+  deck.addEventListener('pointercancel', function(){ tracking = false; });
+
+  function fromHash(){ var n = parseInt((location.hash || '').slice(1), 10); go(isNaN(n) ? 0 : n - 1); }
+  addEventListener('hashchange', fromHash);
+  fromHash();
+})();
+</script>
+</body>
+</html>
