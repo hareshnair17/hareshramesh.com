@@ -120,9 +120,12 @@ html.locked .nav{opacity:0;pointer-events:none}
 
 /* Work */
 .work{display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1.6fr);gap:clamp(24px,4vw,56px);align-items:start}
-.rows{display:grid;gap:4px}
+.rows{display:grid;gap:14px}
 .row{display:grid;grid-template-columns:minmax(0,1fr);gap:0;align-items:center;padding:16px;border-radius:16px;text-decoration:none;border:1px solid transparent;transition:background .18s,border-color .18s}
-.row{display:block;padding:4px 16px}
+.row{display:block;padding:4px 16px;position:relative}
+/* hairline between projects so each reads as its own piece of work; hidden next to the open card, which has its own border */
+.row+.row::before{content:'';position:absolute;left:16px;right:16px;top:-8px;height:1px;background:var(--line);transition:opacity .18s}
+.row.on::before,.row.on+.row::before{opacity:0}
 .row.on{background:var(--surface);border-color:var(--line);padding-block:10px 18px}
 .row-head{all:unset;display:block;width:100%;cursor:pointer;padding-block:10px;box-sizing:border-box}
 .row-head:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:8px}
@@ -574,8 +577,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 <footer><div class="wrap"><span>© 2026 Haresh Ramesh</span><span>Bangalore, India</span></div></footer>
 
 <div class="sound" id="sound" role="group" aria-label="Agent voice" hidden>
-  <button type="button" id="sndOn" aria-pressed="true" aria-label="Voice on"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
-  <button type="button" id="sndOff" aria-pressed="false" aria-label="Voice off"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+  <button type="button" id="sndOn" aria-pressed="false" aria-label="Voice on"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+  <button type="button" id="sndOff" aria-pressed="true" aria-label="Voice off"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
 </div>
 <button class="replay" id="replay" type="button" hidden aria-label="Back to Haresh's agent">
   <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 14 4 9l5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -781,7 +784,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
   // The agent "thinks" (orb becomes orbiting rings, caret blinks), then types while the orb speaks
   /* ---------- Voice (browser speech, off by default) ---------- */
   var synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
-  var soundOn = true, voice = null, speaking = false, typingNow = false, actx = null, activated = false, queued = '';
+  var soundOn = false, voice = null, speaking = false, typingNow = false, actx = null, activated = false, queued = '';
   var soundEl = $('#sound'), sndOn = $('#sndOn'), sndOff = $('#sndOff');
   function pickVoice(){
     if (!synth) return;
