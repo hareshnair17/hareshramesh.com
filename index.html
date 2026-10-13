@@ -160,6 +160,10 @@ html.locked .nav{opacity:0;pointer-events:none}
 .m-media svg,.m-media video,.m-media img{width:100%;height:100%;object-fit:cover;object-position:left top;display:block}
 .note{margin-top:12px;font-size:var(--step--1);color:var(--muted)}
 .cta{display:inline-flex;gap:8px;align-items:center;margin-top:16px;font-weight:600;text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:2px}
+.cta{color:var(--ink);transition:color .18s,border-color .18s}
+.cta .arr{display:inline-block;transition:transform .2s cubic-bezier(.2,.7,.3,1)}
+.cta:hover,.cta:focus-visible{color:var(--accent-text);border-bottom-color:var(--accent-text)}
+.cta:hover .arr,.cta:focus-visible .arr{transform:translateX(4px)}
 
 /* mock styling */
 .m-bg{fill:var(--mock-bg)} .m-panel{fill:var(--mock-panel)} .m-line{fill:var(--mock-line)} .m-stroke{fill:none;stroke:var(--mock-line);stroke-width:1.5}
@@ -416,7 +420,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
             <div class="more" id="more-agent"><div>
               <p>Turned a powerful but intimidating automation builder into an agent-driven experience, removing the barrier that kept recruiters from adopting AI.</p>
               <span class="m-media" aria-hidden="true"><video src="media/agent-builder.mp4" poster="media/agent-builder.jpg" muted loop playsinline autoplay preload="metadata"></video></span>
-              <a class="cta" href="agent-builder.html">View case study →</a>
+              <a class="cta" href="agent-builder.html">View case study <span class="arr" aria-hidden="true">→</span></a>
             </div></div>
           </article>
           <article class="row" data-shot="portal">
@@ -427,7 +431,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
             <div class="more" id="more-portal"><div>
               <p>A modern customer support portal rebuilt around how support teams actually triage and resolve.</p>
               <span class="m-media" aria-hidden="true"><img src="media/cards/portal.webp" alt="" loading="lazy" width="1440" height="785"></span>
-              <a class="cta" href="support-portal.html">View case study →</a>
+              <a class="cta" href="support-portal.html">View case study <span class="arr" aria-hidden="true">→</span></a>
             </div></div>
           </article>
           <article class="row" data-shot="bot">
@@ -439,7 +443,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
               <p>Merged the knowledge base with the chatbot so common tickets resolve themselves before they reach an agent.</p>
               
               <span class="m-media" aria-hidden="true"><img src="media/cards/bot.webp" alt="" loading="lazy" width="1440" height="785"></span>
-              <a class="cta" href="resolution-bot.html">View case study →</a>
+              <a class="cta" href="resolution-bot.html">View case study <span class="arr" aria-hidden="true">→</span></a>
             </div></div>
           </article>
           <article class="row" data-shot="tasks">
@@ -451,7 +455,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
               <p>A task management tool that cleared an implementation bottleneck and replaced inconsistent processes with one shared flow.</p>
               
               <span class="m-media" aria-hidden="true"><img src="media/cards/tasks.webp" alt="" loading="lazy" width="1440" height="785"></span>
-              <a class="cta" href="task-management.html">View case study →</a>
+              <a class="cta" href="task-management.html">View case study <span class="arr" aria-hidden="true">→</span></a>
             </div></div>
           </article>
         </div>
@@ -464,7 +468,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
               <img data-shot="tasks" src="media/cards/tasks.webp" alt="Task Management home: weekly task counts, my tasks, mentions and recent work" loading="lazy">
             </div>
           </div>
-          <a class="cta view" id="viewCase" href="agent-builder.html">View case study →</a>
+          <a class="cta view" id="viewCase" href="agent-builder.html">View case study <span class="arr" aria-hidden="true">→</span></a>
         </div>
       </div>
     </div>
@@ -1014,7 +1018,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
   function show(key){
     if (key === current) return;
     current = key; lastSel = now();
-    var row = $('.row[data-shot="' + key + '"] .cta'); if (row){ var vc = $('#viewCase'); vc.href = row.getAttribute('href'); vc.textContent = row.textContent; if (row.target) { vc.target = '_blank'; vc.rel = 'noopener'; } else { vc.removeAttribute('target'); } }
+    var row = $('.row[data-shot="' + key + '"] .cta'); if (row){ var vc = $('#viewCase'); vc.href = row.getAttribute('href'); vc.innerHTML = row.innerHTML; if (row.target) { vc.target = '_blank'; vc.rel = 'noopener'; } else { vc.removeAttribute('target'); } }
     $$('.screens [data-shot]').forEach(function(s){
       var on = s.getAttribute('data-shot') === key; s.classList.toggle('on', on);
       if (s.tagName === 'VIDEO'){ if (on){ var pr = s.play(); if (pr && pr.catch) pr.catch(function(){}); } else s.pause(); }
