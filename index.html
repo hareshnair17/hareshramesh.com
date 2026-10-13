@@ -144,6 +144,8 @@ html.locked .nav{opacity:0;pointer-events:none}
 .row h3{font-size:var(--step-1);margin-bottom:4px}
 .meta{display:flex;flex-wrap:wrap;gap:6px 12px;font-family:var(--font-mono);font-size:.74rem;color:var(--muted);margin-bottom:6px}
 .row p{color:var(--muted);font-size:.95rem}
+.row h3 .idx{font-family:var(--font-mono);font-size:.62em;font-weight:500;letter-spacing:.02em;color:var(--muted);margin-right:.7em;vertical-align:.18em}
+.row.on h3 .idx{color:var(--accent-text)}
 .meta .rec{color:var(--accent-text);background:color-mix(in srgb,var(--accent) 12%,transparent);padding:1px 8px;border-radius:99px;margin-left:auto;white-space:nowrap}
 .metric{margin-top:8px;font-family:var(--font-mono);font-size:.8rem;color:var(--accent-text)}
 .metric.wip{color:var(--muted)}
@@ -418,7 +420,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
           <article class="row on" data-shot="agent" data-say="Adoption went 38% → 66%.">
             <button class="row-head" type="button" aria-expanded="true" aria-controls="more-agent">
               <span class="meta"><span>0 → 1</span><span>Sense HQ</span><span class="rec"><span aria-hidden="true">★</span> Recommended</span></span>
-              <h3>AI Agent Builder</h3>
+              <h3><span class="idx" aria-hidden="true">01</span>AI Agent Builder</h3>
             </button>
             <div class="more" id="more-agent"><div>
               <p>Turned a powerful but intimidating automation builder into an agent-driven experience, removing the barrier that kept recruiters from adopting AI.</p>
@@ -429,7 +431,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
           <article class="row" data-shot="portal">
             <button class="row-head" type="button" aria-expanded="false" aria-controls="more-portal">
               <span class="meta"><span>Revamp</span></span>
-              <h3>Enterprise Support Portal</h3>
+              <h3><span class="idx" aria-hidden="true">02</span>Enterprise Support Portal</h3>
             </button>
             <div class="more" id="more-portal"><div>
               <p>A modern customer support portal rebuilt around how support teams actually triage and resolve.</p>
@@ -440,7 +442,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
           <article class="row" data-shot="bot">
             <button class="row-head" type="button" aria-expanded="false" aria-controls="more-bot">
               <span class="meta"><span>Conversational AI</span></span>
-              <h3>Auto Resolution Bot</h3>
+              <h3><span class="idx" aria-hidden="true">03</span>Auto Resolution Bot</h3>
             </button>
             <div class="more" id="more-bot"><div>
               <p>Merged the knowledge base with the chatbot so common tickets resolve themselves before they reach an agent.</p>
@@ -452,7 +454,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
           <article class="row" data-shot="tasks">
             <button class="row-head" type="button" aria-expanded="false" aria-controls="more-tasks">
               <span class="meta"><span>0 → 1</span></span>
-              <h3>Task Management</h3>
+              <h3><span class="idx" aria-hidden="true">04</span>Task Management</h3>
             </button>
             <div class="more" id="more-tasks"><div>
               <p>A task management tool that cleared an implementation bottleneck and replaced inconsistent processes with one shared flow.</p>
