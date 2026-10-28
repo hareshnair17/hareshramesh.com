@@ -174,6 +174,25 @@ img{max-width:100%;display:block}
 .ring1 b{font-size:clamp(1.3rem,2.2vw,2.1rem);font-weight:700}
 .ring1 span{font-size:var(--t-small);color:var(--body)}
 
+/* personas: two cards side by side, shared pains once below */
+.pp-h{max-width:34ch;margin-top:clamp(10px,2vh,18px)}
+.pp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2.2vw,32px);margin-top:clamp(14px,3vh,32px)}
+.pcard{border:1px solid var(--rule);border-radius:16px;padding:clamp(16px,2.6vh,28px) clamp(18px,2vw,28px);display:grid;gap:clamp(12px,2.2vh,20px);align-content:start;background:#fff}
+.pcard header{display:flex;align-items:center;gap:clamp(12px,1.4vw,18px)}
+.pcard header img{height:clamp(52px,5.4vw,76px);width:auto;flex:none}
+.pcard h3{font-size:clamp(1.1rem,1.5vw,1.45rem);font-weight:600;letter-spacing:-.015em;line-height:1.2}
+.pcard .role{font-size:var(--t-small);color:var(--muted);margin-top:4px}
+.need{display:grid;gap:4px;font-size:var(--t-body);font-weight:500;color:var(--ink);padding-bottom:clamp(12px,2vh,18px);border-bottom:1px solid var(--rule)}
+.need span,.shared .lbl{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.pp-pains{list-style:none;margin:0;padding:0;display:grid;gap:clamp(8px,1.4vh,12px)}
+.pp-pains li{position:relative;padding-left:20px;font-size:var(--t-small);line-height:1.45;color:var(--body)}
+.pp-pains li::before{content:"";position:absolute;left:0;top:.5em;width:8px;height:8px;border-radius:50%;background:var(--red)}
+.pp-pains b{color:var(--ink);font-weight:600}
+.shared{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:clamp(14px,2.6vh,28px)}
+.shared .lbl{margin-right:4px}
+.shared .chip{background:#F6DADB;color:#1B1B1E;border-radius:999px;padding:7px 14px;font-size:var(--t-small)}
+@media (max-height:800px) and (min-width:901px){ .pp-h{margin-top:6px} .pp{margin-top:14px} .pcard{gap:10px;padding:16px 22px} .pcard header img{height:50px} .need{padding-bottom:10px} .pp-pains{gap:6px} .shared{margin-top:12px} }
+
 /* persona */
 .persona{display:grid;grid-template-columns:minmax(150px,.35fr) minmax(0,1fr);gap:clamp(24px,5vw,80px);align-items:center;margin-top:clamp(4px,2vh,20px)}
 .persona figure{display:grid;justify-items:center}
@@ -250,7 +269,7 @@ img{max-width:100%;display:block}
 .end a.main{background:#fff;color:#111;border-color:#fff}
 
 @media (max-width:900px){
-  .cols,.cols.half,.cols.wide-media,.dec,.tour,.quad,.persona{grid-template-columns:minmax(0,1fr)}
+  .cols,.cols.half,.cols.wide-media,.dec,.tour,.quad,.persona,.pp{grid-template-columns:minmax(0,1fr)}
   .finds,.ai3{grid-template-columns:minmax(0,1fr)}
   .notes{grid-template-columns:repeat(2,minmax(0,1fr))}
   .hint{display:none}
@@ -378,39 +397,32 @@ img{max-width:100%;display:block}
     </div>
   </section>
 
-  <!-- 8 Persona 1 -->
-  <section class="slide" data-chapter="Research" aria-label="Persona: dealership employees">
+  <!-- 8 Personas -->
+  <section class="slide" data-chapter="Research" aria-label="User personas">
     <div class="in-slide">
       <span class="tag">User Personas</span>
-      <p class="b" style="max-width:52rem">With a baseline understanding of the requirements, research surfaced two primary personas and their pain points.</p>
-      <div class="persona">
-        <figure><img src="media/sp/persona-dealer.webp" alt="" width="158" height="216"><figcaption>Dealership Employees</figcaption></figure>
-        <ul class="pains">
-          <li>Had to undergo separate training to use third-party tools that aren't integrated with Tekion, leading to extra time and learning effort.</li>
-          <li>In case of bugs or issues, has to manually switch between platforms, increasing the chance of errors and slowing down response times.</li>
-          <li>Struggles with clunky, non-intuitive interfaces that aren't optimised for the dealership context.</li>
-          <li>Moves between the showroom, service floor and delivery areas. Third-party tools that aren’t built for mobile or tablet disrupt this on-the-go workflow and delay real-time responses.</li>
-          <li>Third-party tools may not show complete interaction history, previous service records, or deal context.</li>
-        </ul>
+      <h2 class="h-sm pp-h">Research surfaced two users, both slowed down by the same broken workflow.</h2>
+      <div class="pp">
+        <article class="pcard">
+          <header><img src="media/sp/persona-dealer.webp" alt="" width="158" height="216"><div><h3>Dealership employees</h3><p class="role">Sales and service staff, always on the move</p></div></header>
+          <p class="need"><span>Needs</span>Help without leaving Tekion</p>
+          <ul class="pp-pains">
+            <li><b>Extra training</b> for support tools outside Tekion</li>
+            <li><b>Platform hopping</b> just to report a bug</li>
+            <li><b>No mobile or tablet</b> support between showroom and service floor</li>
+          </ul>
+        </article>
+        <article class="pcard">
+          <header><img src="media/sp/persona-agent.webp" alt="" width="188" height="216"><div><h3>HQ support agents</h3><p class="role">Tekion’s support team, the new target users</p></div></header>
+          <p class="need"><span>Needs</span>A ticket’s full story in one place</p>
+          <ul class="pp-pains">
+            <li><b>Tool juggling</b> across the support tool, DMS, CRM and portals</li>
+            <li><b>No way to loop in</b> technicians or sales, so email and Slack</li>
+            <li><b>Misrouted tickets</b> and weak prioritisation</li>
+          </ul>
+        </article>
       </div>
-    </div>
-  </section>
-
-  <!-- 9 Persona 2 -->
-  <section class="slide" data-chapter="Research" aria-label="Persona: HQ support agents">
-    <div class="in-slide">
-      <span class="tag">User Personas</span>
-      <p class="b" style="max-width:52rem">The second persona represents Tekion’s new target group.</p>
-      <div class="persona">
-        <figure><img src="media/sp/persona-agent.webp" alt="" width="188" height="216"><figcaption>HQ Support Agents</figcaption></figure>
-        <ul class="pains">
-          <li>Often lack access to full customer history, past service interactions, or vehicle details, forcing them to piece information together manually.</li>
-          <li>Frequently switch between the support tool, dealership systems (like DMS/CRM), and internal portals.</li>
-          <li>Struggle with clunky, non-intuitive interfaces that aren't optimised for the dealership context.</li>
-          <li>Support tools lack real-time collaboration like tagging technicians or looping in sales/service advisors, forcing agents onto email or Slack.</li>
-          <li>Tickets get misrouted or poorly prioritised, leading to longer resolution times and frustrated dealer users.</li>
-        </ul>
-      </div>
+      <p class="shared"><span class="lbl">Both</span><span class="chip">Clunky interfaces not built for dealerships</span><span class="chip">Missing customer and service history</span></p>
     </div>
   </section>
 
